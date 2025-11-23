@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Clock, CheckCircle2, XCircle, Loader2, FileVideo } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Loader2, FileVideo, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
 
 const statusConfig = {
@@ -9,7 +9,7 @@ const statusConfig = {
   failed: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/20' },
 };
 
-export default function JobList({ jobs, selectedJobId, onSelectJob }) {
+export default function JobList({ jobs, selectedJobId, onSelectJob, onDeleteJob }) {
   if (jobs.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-slate-500 p-8 text-center">
@@ -66,6 +66,17 @@ export default function JobList({ jobs, selectedJobId, onSelectJob }) {
                 <Icon className={clsx("w-3.5 h-3.5", config.animate && "animate-spin")} />
                 <span className="capitalize">{job.status}</span>
               </div>
+              
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteJob(job.id);
+                }}
+                className="ml-4 p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+                title="Delete job"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           </motion.div>
         );

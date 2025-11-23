@@ -9,6 +9,7 @@ export default function Studio() {
   const [jobs, setJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // In-memory persistence for demo purposes
   // In a real app, this would come from local storage or backend
@@ -21,13 +22,21 @@ export default function Studio() {
         console.error('Failed to parse saved jobs', e);
       }
     }
+    setIsLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (jobs.length > 0) {
+    if (isLoaded) {
       localStorage.setItem('wizzio_jobs', JSON.stringify(jobs));
     }
-  }, [jobs]);
+  }, [jobs, isLoaded]);
+
+  const handleDeleteJob = (jobId) => {
+    setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
+    if (selectedJobId === jobId) {
+      setSelectedJobId(null);
+    }
+  };
 
   const handleCreateReel = async (formData) => {
     setIsSubmitting(true);
@@ -125,7 +134,8 @@ export default function Studio() {
               <JobList 
                 jobs={jobs} 
                 selectedJobId={selectedJobId} 
-                onSelectJob={setSelectedJobId} 
+                onSelectJob={setSelectedJobId}
+                onDeleteJob={handleDeleteJob}
               />
             </div>
           </div>
